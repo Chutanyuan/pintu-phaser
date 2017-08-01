@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>拼图</title>
+    <script src="phaser.js"></script>
+</head>
+<body>
+<script>
+    var game = new Phaser.Game(800,457,Phaser.AUTO,'彦',{
+        preload:preload,
+        create:create
+    });
+    var widthPic,
+        heightPic,
+        cols = 4,
+        rows = 3,
+        picAmount,
+        shuffleArray = [],
+        picGroup;
+    function preload() {
+        widthPic = game.width/cols;
+        heightPic = game.height/rows;
+        game.load.spritesheet('yan','image/yan.png',widthPic,heightPic);
+    }
+    function create() {
+        var index = 0,
+            pic;
+        picAmount = rows*cols;
+        shuffleArray = createShuffledArray();
+        picGroup = game.add.group();
+        for (i=0; i<rows;i++) {
+            for (j = 0; j < cols; j++) {
+                if (shuffleArray[index]){
+                    pic = picGroup.create(j*widthPic,i*heightPic,'yan',shuffleArray[index]);
+
+                }else{
+                    pic = picGroup.create(j*widthPic,i*heightPic);
+                    pic.black = true;
+                }
+                pic.currentIndex = index;
+                pic.destIndex = shuffleArray[index];
+                pic.inputEnabled = true;
+                pic.events.onInputDown.add(pictureTouch,this);
+                pic.posX = j;
+                pic.posY = i;
+                index++;
+            }
+        }
+    }
+    function pictureTouch(pic) {
+        var blackPic = canMove(pic);
+        if (blackPic){
+            movePic(pic,blackPic);
+        }
+    }
+    function canMove(pic) {
+        var foundBlack = false;
+        picGroup.children.forEach(function (element) {
+            if (element.posX === (pic.posX - 1) && element.posY === pic.posY && element.black || element.posX === (pic.posX + 1) && element.posY === pic.posY && element.black || element.posY === (pic.posY - 1) && element.posX === pic.posX && element.black || element.posY === (pic.posY + 1) && element.posX === pic.posX && element.black) {
+                foundBlack = element;
+                return;
+            }
+        });
+        return foundBlack;
+    }
+    function movePic(pic, blackPic) {
+        var tmpPic = {
+            posX:pic.posX,
+            posY:pic.posY,
+            currentIndex:pic.currentIndex
+        };
+        game.add.tween(pic).to({x:blackPic.posX*widthPic,y:blackPic.posY*heightPic},300,Phaser.Easing.Linear.None,true);
+        pic.posX = blackPic.posX;
+        pic.posY = blackPic.posY;
+        pic.currentind = blackPic.currentIndex;
+        blackPic.posX = tmpPic.posX;
+        blackPic.posY = tmpPic.posY;
+        blackPic.currentIndex = tmpPic.currentIndex;
+        checkPic();
+    }
+    function checkPic() {
+        var finish = true;
+        picGroup.children.forEach(function (t) {
+            if (t.currentIndex !== t.destIndex){
+                finish = false;
+                return;
+            }
+        });
+        if (finish){
+            var style = { font: "40px Arial", fill: "#FFFFFF", align: "center"};
+            var text = game.add.text(game.world.centerX, game.world.centerY, "YOU \nWIN!", style);
+            text.anchor.set(0.5);
+        }else{
+
+        }
+    }
+    function createShuffledArray() {
+        var array = [];
+        for (var i = 0;i<picAmount;i++){
+            array.push(i);
+        }
+        return shuffle(array);
+    }
+    function shuffle(array) {
+        var counter = array.length;
+        var temp;
+        var index;
+        while (counter>0){
+            index = Math.floor(Math.random()*counter);
+            counter--;
+            temp = array[counter];
+            array[counter] = array[index];
+            array[index] = temp;
+        }
+        return array;
+    }
+</script>
+</body>
+</html>
