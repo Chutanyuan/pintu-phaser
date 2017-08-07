@@ -70,9 +70,6 @@ var playGame = function (game) {
         this.temptile.visible = false;
         this.tileGroup.add(this.temptile);
     };
-    this.isMatch = function (row, col) {
-        // retur
-    };
     this.pickTile = function (e) {
         //处理手势动作
         this.movingRow = Math.floor((e.position.y - gameOptions.offsetY) / gameOptions.tileSize);
@@ -127,12 +124,34 @@ var playGame = function (game) {
         }
     };
     this.handleDrag = function () {
-        switch(this.dragDirection){
+        switch (this.dragDirection) {
             case HORIZONTAL_DRAG:
                 console.log('横向滑动');
                 this.temptile.visible = false;
-                this.temptile.y = this.movingRow*gameOptions.tileSize;
-                var deltaX = (Math.floor(this.distX/gameOptions.tileSize)%gameOptions.fieldSize);
+                this.temptile.y = this.movingRow * gameOptions.tileSize;
+                var deltaX = (Math.floor(this.distX / gameOptions.tileSize) % gameOptions.fieldSize);
+                if (deltaX >= 0) {
+                    this.temptile.frame = this.tileArray[this.movingRow][gameOptions.fieldSize - 1 - deltaX].tileValue;
+                } else {
+                    deltaX = deltaX * -1 - 1;
+                    this.temptile.frame = this.tileArray[this.movingRow][deltaX].tileValue;
+                }
+                for (var i = 0; i < gameOptions.fieldSize; i++) {
+                    this.tileArray[this.movingRow][i].tileSprite.x = (i * gameOptions.tileSize + this.distX) % (gameOptions.tileSize * gameOptions.fieldSize);
+                    if (this.tileArray[this.movingRow][i].tileSprite.x < 0) {
+                        this.tileArray[this.movingRow]
+                            [i].tileSprite.x += gameOptions.tileSize * gameOptions.fieldSize;
+                    }
+                }
+                var tileX = this.distX % gameOptions.tileSize;
+                if (tileX > 0) {
+                    this.temptile.x = tileX - gameOptions.tileSize;
+                    this.temptile.visible = true;
+                }
+                if (tileX < 0) {
+                    this.temptile.x = tileX;
+                    this.temptile.visible = true;
+                }
                 break;
             case VERTICAL_DRAG:
                 console.log('竖向滑动');
@@ -140,17 +159,131 @@ var playGame = function (game) {
         }
     };
     this.handleStop = function () {
-        switch(this.dragDirection){
+        switch (this.dragDirection) {
             case HORIZONTAL_DRAG:
                 console.log(' stop 横向滑动');
+                var shiftAmount = Math.floor(this.distX / (gameOptions.tileSize / 2));
+                shiftAmount = Math.ceil(shiftAmount / 2) % gameOptions.fieldSize;
+                var tempArray = [];
+                if (shiftAmount > 0) {
+                    for (var i = 0; i < gameOptions.fieldSize; i++) {
+                        tempArray[(shiftAmount + 1) % gameOptions.fieldSize] = this.tileArray[this.movingRow][i].tileValue;
+                    }
+                } else {
+                    for (var i = 0; i < gameOptions.fieldSize; i++) {
+                        tempArray[i] = this.tileArray[this.movingRow][(Math.abs(shiftAmount + i) % gameOptions.fieldSize)].tileValue;
+                    }
+                }
+                var offset = this.distX % gameOptions.tileSize;
+                if (Math.abs(offset) > gameOptions.tileSize / 2) {
+                    if (offset < 0) {
+                        offset = offset + gameOptions.tileSize;
+                    } else {
+                        offset = offset - gameOptions.tileSize;
+                    }
+                }
+                for (var i = 0; i < gameOptions.fieldSize; i++) {
+                    this.tileArray[this.movingRow][i].tileValue = tempArray[i];
+                    this.tileArray[this.movingRow][i].tileSprite.frame = tempArray[i];
+                    this.tileArray[this.movingRow][i].tileSprite.x = i * gameOptions.tileSize + offset;
+                    game.add.tween(this.tileArray[this.movingRow][i].tileSprite).to({x: i * gameOptions.tileSize}, gameOptions.tweenSpeed, Phaser.Easing.Cubic.Out, true);
+                }
+                var tempDestination = -gameOptions.tileSize;
+                if (offset < 0) {
+                    this.temptile.x += gameOptions.tileSize * gameOptions.fieldSize;
+                    tempDestination = gameOptions.fieldSize * gameOptions.tileSize;
+                }
+                var tween = game.add.tween(this.temptile).to({
+                    x: tempDestination
+                }, gameOptions.tweenSpeed, Phaser.Easing.Cubic.Out, true);
+                tween.onComplete.add(function () {
+                    if (this.match) {
+
+                    }
+                }, this);
                 break;
             case VERTICAL_DRAG:
                 console.log(' stop 竖向滑动');
                 break;
         }
+    };
+    this.tileAt = function (row, col) {
+        if (row < 0 || row >= gameOptions.fieldSize || col < 0 || col >= gameOptions.fieldSize) {
+            return false;
+        }
+        return this.tileArray[row][col];
+    };
+    this.isHorizontalMatch = function (row, col) {
+        return this.tileAt(row, col).tileValue == this.tileAt(row, col - 1).tileValue && this.tileAt(row, col).tileValue == this.tileAt(row, col - 2).tileValue;
+    };
+    this.isVerticalMatch = function (row, col) {
+        return this.tileAt(row, col).tileValue == this.tileAt(row - 1, col).tileValue && this.tileAt(row, col).tileValue == this.tileAt(row - 2, col).tileValue;
+    };
+    this.isMatch = function (row, col) {
+        return this.isHorizontalMatch(row, col) || this.isVerticalMatch(row, col);
+    };
+    this.matchInBoard = function () {
+        for (var i = 0; i < gameOptions.fieldSize; i++) {
+            for (var j = 0; j < gameOptions.fieldSize; j++) {
+                if (this.isMatch(i, j)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+    this.handleHorizontalMatches = function () {
+        for (var i = 0; i < gameOptions.fieldSize; i++) {
+            var colorStreak = 1;
+            var currentColor = -1;
+            var startStreak = 0;
+            for (var j = 0; j < gameOptions.fieldSize; j++) {
+                if (this.tileAt(i, j).tileValue == currentColor) {
+                    colorStreak++;
+                }
+                if (this.tileAt(i, j).tileValue != currentColor || j == gameOptions.fieldSize - 1) {
+                    if (colorStreak > 2) {
+                        var endStreak = j - 1
+                        if (this.tileAt(i, j).tileValue == currentColor) {
+                            endStreak = j;
+                        }
+                        for (var k = startStreak; k <= endStreak; k++) {
+                            this.tilesToRemove[i][k]++;
+                        }
+                    }
+                    currentColor = this.tileAt(i, j).tileValue
+                    colorStreak = 1;
+                    startStreak = j;
+                }
+            }
+        }
+    };
+    this.handleVerticalMatches = function () {
+        for (var i = 0; i < gameOptions.fieldSize; i++) {
+            var colorStreak = 1;
+            var currentColor = -1;
+            var startStreak = 0;
+            for (var j = 0; j < gameOptions.fieldSize; j++) {
+                if (this.tileAt(j, i).tileValue == currentColor) {
+                    colorStreak++;
+                }
+                if (this.tileAt(j, i).tileValue != currentColor || j == gameOptions.fieldSize - 1) {
+                    if (colorStreak > 2) {
+                        var endStreak = j - 1
+                        if (this.tileAt(j, i).tileValue == currentColor) {
+                            endStreak = j;
+                        }
+                        for (var k = startStreak; k <= endStreak; k++) {
+                            this.tilesToRemove[k][i]++;
+                        }
+                    }
+                    currentColor = this.tileAt(j, i).tileValue
+                    colorStreak = 1;
+                    startStreak = j;
+                }
+            }
+        }
     }
-
-
 };
 window.onload = function () {
     game = new Phaser.Game(gameOptions.gameWidth, gameOptions.gameHeight);
