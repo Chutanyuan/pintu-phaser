@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0bd65c47-71ca-48f2-864d-70a50a5d38b1" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/main.js" afterPath="$PROJECT_DIR$/js/main.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -19,9 +20,13 @@
       <file leaf-file-name="main.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js/main.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="383">
-              <caret line="72" column="40" lean-forward="true" selection-start-line="72" selection-start-column="40" selection-end-line="72" selection-end-column="40" />
-              <folding />
+            <state relative-caret-position="416">
+              <caret line="134" column="97" lean-forward="false" selection-start-line="134" selection-start-column="97" selection-end-line="134" selection-end-column="97" />
+              <folding>
+                <element signature="e#1658#2221#0" expanded="false" />
+                <element signature="e#2258#2508#0" expanded="false" />
+                <element signature="e#2549#2573#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -29,8 +34,8 @@
       <file leaf-file-name="dragIndex.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/dragIndex.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="220">
-              <caret line="10" column="9" lean-forward="true" selection-start-line="10" selection-start-column="9" selection-end-line="10" selection-end-column="9" />
+            <state relative-caret-position="88">
+              <caret line="4" column="29" lean-forward="true" selection-start-line="4" selection-start-column="29" selection-end-line="4" selection-end-column="29" />
               <folding />
             </state>
           </provider>
@@ -69,11 +74,10 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="598" />
-    <option name="y" value="23" />
-    <option name="width" value="1001" />
-    <option name="height" value="877" />
+  <component name="ProjectFrameBounds" fullScreen="true">
+    <option name="x" value="802" />
+    <option name="width" value="798" />
+    <option name="height" value="900" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -154,15 +158,16 @@
       <workItem from="1501639171251" duration="1578000" />
       <workItem from="1502001525213" duration="564000" />
       <workItem from="1502002116839" duration="872000" />
-      <workItem from="1502003343922" duration="7020000" />
+      <workItem from="1502003343922" duration="7777000" />
+      <workItem from="1502067259078" duration="4802000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="18229000" />
+    <option name="totallyTimeSpent" value="23788000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="598" y="23" width="1001" height="877" extended-state="0" />
+    <frame x="802" y="0" width="798" height="900" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23354565" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -198,7 +203,31 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#1658#2221#0" expanded="false" />
+            <element signature="e#2258#2508#0" expanded="false" />
+            <element signature="e#2549#2573#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dragIndex.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="10" column="9" lean-forward="true" selection-start-line="10" selection-start-column="9" selection-end-line="10" selection-end-column="9" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/main.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#1658#2221#0" expanded="false" />
+            <element signature="e#2258#2508#0" expanded="false" />
+            <element signature="e#2549#2573#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -214,7 +243,11 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#1658#2221#0" expanded="false" />
+            <element signature="e#2258#2508#0" expanded="false" />
+            <element signature="e#2549#2573#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -230,7 +263,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -243,7 +275,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -269,23 +300,26 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="189">
           <caret line="22" column="0" lean-forward="false" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/dragIndex.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
-          <caret line="10" column="9" lean-forward="true" selection-start-line="10" selection-start-column="9" selection-end-line="10" selection-end-column="9" />
+        <state relative-caret-position="88">
+          <caret line="4" column="29" lean-forward="true" selection-start-line="4" selection-start-column="29" selection-end-line="4" selection-end-column="29" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/js/main.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="383">
-          <caret line="72" column="40" lean-forward="true" selection-start-line="72" selection-start-column="40" selection-end-line="72" selection-end-column="40" />
-          <folding />
+        <state relative-caret-position="416">
+          <caret line="134" column="97" lean-forward="false" selection-start-line="134" selection-start-column="97" selection-end-line="134" selection-end-column="97" />
+          <folding>
+            <element signature="e#1658#2221#0" expanded="false" />
+            <element signature="e#2258#2508#0" expanded="false" />
+            <element signature="e#2549#2573#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
