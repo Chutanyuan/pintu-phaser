@@ -1,0 +1,16 @@
+{
+  "name": "神经猫",
+  "description": "",
+  "version": "0.0.1",
+  "start_url": "index.html",
+  "icons": [
+    {
+      "src": "image/yan.png",
+      "sizes": "800x457",
+      "type": "image/png",
+      "density": "4.0"
+    }
+  ],
+  "orientation": "landscape",
+  "fullscreen": "true"
+}

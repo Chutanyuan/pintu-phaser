@@ -47,6 +47,7 @@ var playGame = function (game) {
 
         // 添加滑动
         game.input.onDown.add(this.pickTile, this);
+        this.gameState = GAME_STATE_IDLE;
     };
     this.addTile = function (row, col) {
         var tile = game.add.sprite(col * gameOptions.tileSize, row * gameOptions.tileSize, 'tiles');
@@ -154,7 +155,30 @@ var playGame = function (game) {
                 }
                 break;
             case VERTICAL_DRAG:
-                console.log('竖向滑动');
+                this.temptile.visible = false;
+                this.temptile.x = this.movingCol * gameOptions.tileSize;
+                var deltaY = (Math.floor(this.distY/gameOptions.tileSize)%gameOptions.fieldSize);
+                if (deltaY>=0){
+                    this.temptile.frame = this.tileArray[gameOptions.fieldSize-1-deltaY][this.movingCol].tileValue;
+                }else{
+                    deltaY = deltaY*-1-1;
+                    this.temptile.frame = this.tileArray[deltaY][this.movingCol].tileValue;
+                }
+                for(var i = 0;i<gameOptions.fieldSize;i++){
+                    this.tileArray[i][this.movingCol].tileSprite.y = (i*gameOptions.tileSize+this.distY)%(gameOptions.tileSize*gameOptions.fieldSize);
+                    if (this.tileArray[i][this.movingCol].tileSprite.y<0){
+                        this.tileArray[i][this.movingCol].tileSprite.y += gameOptions.tileSize*gameOptions.fieldSize;
+                    }
+                }
+                var tileY = this.distY%gameOptions.tileSize;
+                if (tileY>0){
+                    this.temptile.y = tileY-gameOptions.tileSize;
+                    this.temptile.visible = true;
+                }
+                if(tileY<0){
+                    this.temptile.y = tileY;
+                    this.temptile.visible = true;
+                }
                 break;
         }
     };
