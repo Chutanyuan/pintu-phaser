@@ -157,25 +157,25 @@ var playGame = function (game) {
             case VERTICAL_DRAG:
                 this.temptile.visible = false;
                 this.temptile.x = this.movingCol * gameOptions.tileSize;
-                var deltaY = (Math.floor(this.distY/gameOptions.tileSize)%gameOptions.fieldSize);
-                if (deltaY>=0){
-                    this.temptile.frame = this.tileArray[gameOptions.fieldSize-1-deltaY][this.movingCol].tileValue;
-                }else{
-                    deltaY = deltaY*-1-1;
+                var deltaY = (Math.floor(this.distY / gameOptions.tileSize) % gameOptions.fieldSize);
+                if (deltaY >= 0) {
+                    this.temptile.frame = this.tileArray[gameOptions.fieldSize - 1 - deltaY][this.movingCol].tileValue;
+                } else {
+                    deltaY = deltaY * -1 - 1;
                     this.temptile.frame = this.tileArray[deltaY][this.movingCol].tileValue;
                 }
-                for(var i = 0;i<gameOptions.fieldSize;i++){
-                    this.tileArray[i][this.movingCol].tileSprite.y = (i*gameOptions.tileSize+this.distY)%(gameOptions.tileSize*gameOptions.fieldSize);
-                    if (this.tileArray[i][this.movingCol].tileSprite.y<0){
-                        this.tileArray[i][this.movingCol].tileSprite.y += gameOptions.tileSize*gameOptions.fieldSize;
+                for (var i = 0; i < gameOptions.fieldSize; i++) {
+                    this.tileArray[i][this.movingCol].tileSprite.y = (i * gameOptions.tileSize + this.distY) % (gameOptions.tileSize * gameOptions.fieldSize);
+                    if (this.tileArray[i][this.movingCol].tileSprite.y < 0) {
+                        this.tileArray[i][this.movingCol].tileSprite.y += gameOptions.tileSize * gameOptions.fieldSize;
                     }
                 }
-                var tileY = this.distY%gameOptions.tileSize;
-                if (tileY>0){
-                    this.temptile.y = tileY-gameOptions.tileSize;
+                var tileY = this.distY % gameOptions.tileSize;
+                if (tileY > 0) {
+                    this.temptile.y = tileY - gameOptions.tileSize;
                     this.temptile.visible = true;
                 }
-                if(tileY<0){
+                if (tileY < 0) {
                     this.temptile.y = tileY;
                     this.temptile.visible = true;
                 }
@@ -221,8 +221,8 @@ var playGame = function (game) {
                     x: tempDestination
                 }, gameOptions.tweenSpeed, Phaser.Easing.Cubic.Out, true);
                 tween.onComplete.add(function () {
-                    if (this.match) {
-
+                    if (this.matchInBoard()) {
+                        this.handleMatches();
                     }
                 }, this);
                 break;
@@ -230,6 +230,57 @@ var playGame = function (game) {
                 console.log(' stop 竖向滑动');
                 break;
         }
+    };
+    this.handleMatches = function () {
+        this.tilesToRemove = [];
+        for (var i = 0; i < gameOptions.fieldSize; i++) {
+            this.tilesToRemove[i] = [];
+            for (var j = 0; j < gameOptions.fieldSize; j++) {
+                this.tilesToRemove[i][j] = 0;
+            }
+        }
+        this.handleHorizontalMatches();
+        this.handleVerticalMatches();
+        for (var i = 0 ; i <gameOptions.fieldSize;i++){
+            for (var j = 0; j<gameOptions.fieldSize; j++){
+                if (this.tilesToRemove[i][j] != 0){
+                    var tween = game.add.tween(this.tileArray[i][j].tileSprite).to({
+                        alpha:0
+                    },gameOptions.fadeSpeed,Phaser.Easing.Linear.None,true);
+                    this.tilePool.push(this.tileArray[i][j].tileSprite);
+                    tween.onComplete.add(function (e) {
+                        if (tween.manager.getAll().length == 1){
+                            this.fillVerticalHoles();
+                        }
+                    },this);
+                    this.tileArray[i][j].isEmpty = true;
+                }
+            }
+        }
+    };
+    this.fillVerticalHoles = function () {
+        for (var i = gameOptions.fieldSize - 2; i>= 0; i--){
+            for (var j = 0;j<gameOptions.fieldSize;j++){
+                if (!this.tileArray[i][j].isEmpty){
+                    var holesBelow = this.countSpacesBelow(i,j);
+                    if (holesBelow){
+                        this.moveDownTile(i,j,i+holesBelow,false);
+                    }
+                }
+            }
+        }
+    };
+    this.countSpacesBelow = function (row, col) {
+        var result = 0;
+        for (var i = row + 1; i < gameOptions.fieldSize; i++) {
+            if (this.tileArray[i][col].isEmpty) {
+                result++;
+            }
+        }
+        return result;
+    };
+    this.moveDownTile = function (fromRow,fromCol,toRow,justMove) {
+
     };
     this.tileAt = function (row, col) {
         if (row < 0 || row >= gameOptions.fieldSize || col < 0 || col >= gameOptions.fieldSize) {
