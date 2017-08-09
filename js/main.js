@@ -159,11 +159,11 @@ var playGame = function (game) {
                 var tempArray = [];
                 if (shiftAmount > 0) {
                     for (var i = 0; i < gameOptions.fieldSize; i++) {
-                        tempArray[(shiftAmount + 1) % gameOptions.fieldSize] = this.tileArray[this.movingRow][i].tileValue;
+                        tempArray[(shiftAmount + i) % gameOptions.fieldSize] = this.tileArray[this.movingRow][i].tileValue;
                     }
                 } else {
                     for (var i = 0; i < gameOptions.fieldSize; i++) {
-                        tempArray[i] = this.tileArray[this.movingRow][(Math.abs(shiftAmount + i) % gameOptions.fieldSize)].tileValue;
+                        tempArray[i] = this.tileArray[this.movingRow][(Math.abs(shiftAmount) + i) % gameOptions.fieldSize].tileValue;
                     }
                 }
                 var offset = this.distX % gameOptions.tileSize;
