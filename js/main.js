@@ -10,7 +10,8 @@ var gameOptions = {
     offsetY: 50,
     tweenSpeed: 100,
     fadeSpeed: 1000,
-    fallSpeed: 250
+    fallSpeed: 250,
+    score:0
 };
 var NO_DRAG = 0;
 var HORIZONTAL_DRAG = 1;
@@ -18,10 +19,12 @@ var VERTICAL_DRAG = 2;
 var GAME_STATE_IDLE = 0;
 var GAME_STATE_DRAG = 1;
 var GAME_STATE_STOP = 2;
-
+var touchNumber = 0;
+var touchNumberCopy = touchNumber;
+var scoreText;
+var scoreToRemove = [];
 
 var playGame = function (game) {
-
     this.preload = function () {
         game.load.spritesheet('tiles', 'image/tiles.png', gameOptions.spritesheetSize, gameOptions.spritesheetSize);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -46,6 +49,11 @@ var playGame = function (game) {
             }
         }
         this.addTempTile();
+        scoreText = game.add.text(gameOptions.gameWidth/2,10,'分数：'+gameOptions.score,{
+            fill:'#ffffff',
+            font:'16px Arial'
+        });
+        scoreText.anchor.x = 0.5;
         game.input.onDown.add(this.pickTile, this);// 添加滑动
         this.gameState = GAME_STATE_IDLE;
     };
@@ -72,14 +80,23 @@ var playGame = function (game) {
         this.tileGroup.add(this.tempTile);
     };
     this.pickTile = function (e) {
+        scoreToRemove = [];
+        scoreToRemove.length = 0;
         this.movingRow = Math.floor((e.position.y - gameOptions.offsetY) / gameOptions.tileSize);
         this.movingCol = Math.floor((e.position.x - gameOptions.offsetX) / gameOptions.tileSize);
         if (this.movingRow >= 0 && this.movingCol >= 0 && this.movingRow < gameOptions.fieldSize && this.movingCol < gameOptions.fieldSize) {//设置判读条件确认在已知局域内做滑动
+            touchNumberCopy = touchNumber;
             this.dragDirection = NO_DRAG;
             game.input.onDown.remove(this.pickTile, this);
             game.input.onUp.add(this.releaseTile, this);
             game.input.addMoveCallback(this.moveTile, this);
+            if (touchNumber === touchNumberCopy){
+                game.input.onDown.add(this.pickTile,this);
+            }
         }
+    };
+    this.timeOut = function () {
+      game.input.onDown.add(this.pickTile,this);
     };
     this.update = function () {
         switch (this.gameState) {
@@ -92,8 +109,6 @@ var playGame = function (game) {
         }
         this.gameState = GAME_STATE_IDLE;
     };
-
-    //
     this.handleDrag = function () {
         switch (this.dragDirection) {
             case HORIZONTAL_DRAG:
@@ -313,6 +328,8 @@ var playGame = function (game) {
         for (var i = 0; i < gameOptions.fieldSize; i++) {
             for (var j = 0; j < gameOptions.fieldSize; j++) {
                 if (this.tilesToRemove[i][j] != 0) {
+                    scoreToRemove.push(i+'-'+j);
+                    console.log('i = '+ i + " j = "+ j + 'scoreToRemove length = '+scoreToRemove.length);
                     var tween = game.add.tween(this.tileArray[i][j].tileSprite).to({
                         alpha: 0
                     }, gameOptions.fadeSpeed, Phaser.Easing.Linear.None, true);
@@ -320,7 +337,11 @@ var playGame = function (game) {
                     tween.onComplete.add(function (e) {
                         if (tween.manager.getAll().length == 1) {
                             this.fillVerticalHoles();
+                            console.log('1 scoreToRemove length = '+scoreToRemove.length);
                         }
+                        console.log('2 scoreToRemove length = '+scoreToRemove.length);
+                        gameOptions.score+=1;
+                        scoreText.setText('分数：'+gameOptions.score);
                     }, this);
                     this.tileArray[i][j].isEmpty = true;
                 }
@@ -437,6 +458,9 @@ var playGame = function (game) {
         this.gameState = GAME_STATE_DRAG;// e.positionDown.x 鼠标点击下去的第一个点 e.position.x 滑动是改变的点
         this.distX = e.position.x - e.positionDown.x;
         this.distY = e.position.y - e.positionDown.y;
+        touchNumber+=1;
+        console.log('两点距离Y = '+this.distY);
+        console.log('两点距离X = '+this.distX);
         if (this.dragDirection == NO_DRAG) {
             var distance = e.position.distance(e.positionDown);
             if (distance > 5) {//Math.atan2 返回 从x坐标轴 到指定坐标点（x,y）的角度//Math.atan2(y,x) 参数格式
@@ -446,6 +470,8 @@ var playGame = function (game) {
                 } else {
                     this.dragDirection = HORIZONTAL_DRAG;
                 }
+            }else{
+                console.log('两点距离'+distance);
             }
         }
     };
